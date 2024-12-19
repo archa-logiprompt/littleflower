@@ -256,7 +256,6 @@
                                                 <div class="teacher-div">
                                                     <div class="form-group col-md-12 text-center">
                                                         <label for="exampleInputEmail1"><?php echo "$period_list->period_one_from - $period_list->period_one_to" ?></label>
-
                                                     </div>
 
                                                     <div class="form-group text-center">
@@ -267,78 +266,101 @@
                                                     </div>
 
                                                     <div class="form-group col-md-6">
-
                                                         <label for="exampleInputEmail1">Subject</label>
                                                         <select id="subject_id" name="subject_id[]" class="form-control subjectclass">
                                                             <option value="">Select</option>
                                                         </select>
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
-
                                                     </div>
+
                                                     <div class="form-group col-md-6">
-
                                                         <label for="exampleInputEmail1">Teacher</label>
-
                                                         <select id="teacher_id" name="teacher_id[]" class="form-control">
                                                             <option value="">Select</option>
                                                         </select>
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
-
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
 
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
+    <!-- New Select Box for Topics -->
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select id="topic_id" name="topic_id[]" class="form-control">
+                                                            <option value="">Select Topic</option>
+                                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
                                                     </div>
-                                                    <div id="otherTextBox" style="display: none;" class="form-group col-md-12">
 
-                                                    </div>
+                                        <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
+
+                                    </div>
+                                    <div class="teacher-div">
+                                                <div class="form-group col-md-12 text-center">
+                                                    <label for="exampleInputEmail1"><?php echo "$period_list->period_two_from - $period_list->period_two_to"; ?></label>
                                                 </div>
-                                                <div class="teacher-div">
-                                                    <div class="form-group col-md-12 text-center">
-                                                        <label for="exampleInputEmail1"><?php echo "$period_list->period_two_from - $period_list->period_two_to" ?></label>
 
-                                                    </div>
-                                                    <div class="form-group text-center">
+                                                <div class="form-group text-center">
                                                         <label for="typeofperiod">Class</label>
-                                                        <input type="radio" name="periodtype[1]" class="periodtype-radio" value="class" checked>
+                                                        <input type="radio" name="periodtype[0]" class="periodtype-radio" value="class" checked>
                                                         <label for="typeofperiod">Other</label>
-                                                        <input type="radio" name="periodtype[1]" class="periodtype-radio" value="other">
+                                                        <input type="radio" name="periodtype[0]" class="periodtype-radio" value="other">
                                                     </div>
-                                                    <div class="form-group col-md-6">
 
+                                                    <div class="form-group col-md-6">
                                                         <label for="exampleInputEmail1">Subject</label>
                                                         <select id="subject_id" name="subject_id[]" class="form-control subjectclass">
                                                             <option value="">Select</option>
                                                         </select>
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
-
                                                     </div>
+
                                                     <div class="form-group col-md-6">
-
                                                         <label for="exampleInputEmail1">Teacher</label>
-
                                                         <select id="teacher_id" name="teacher_id[]" class="form-control">
                                                             <option value="">Select</option>
                                                         </select>
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                                    </div>
-                                                    <div class="form-group col-md-12" style="display:none">
-
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
                                                     </div>
 
-                                                </div>
+    <!-- New Select Box for Topics -->
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select id="topic_id" name="topic_id[]" class="form-control">
+                                                            <option value="">Select Topic</option>
+                                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
+
+                                                    <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
+                                    </div>
+
                                                 <div class="teacher-div">
                                                     <div class="form-group col-md-12 text-center">
                                                         <label for="exampleInputEmail1"><?php echo "$period_list->period_three_from - $period_list->period_three_to" ?></label>
@@ -369,15 +391,29 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
+                                                    <div class="form-group col-md-12">
+                                                    <label for="exampleInputEmail1">Topics</label>
+                                                    <select name="topic_id[]" class="form-control">
+                                                        <option value="">Select Topic</option>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                </div>
 
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
-                                                    </div>
-
+                                                <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option value="<?php echo $staff['id']; ?>"><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
                                                 </div>
 
                                                 <div class="teacher-div">
@@ -410,14 +446,28 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
-
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
-                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                    <label for="exampleInputEmail1">Topics</label>
+                                                    <select name="topic_id[]" class="form-control">
+                                                        <option value="">Select Topic</option>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                </div>
+                                                <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
 
                                                 </div>
                                                 <div class="teacher-div">
@@ -450,14 +500,29 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
+                                                    <div class="form-group col-md-12">
+                                                    <label for="exampleInputEmail1">Topics</label>
+                                                    <select name="topic_id[]" class="form-control">
+                                                        <option value="">Select Topic</option>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                </div>
 
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
-                                                    </div>
+                                                <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
 
                                                 </div>
                                                 <div class="teacher-div">
@@ -490,14 +555,29 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
-
-                                                        <label for="exampleInputEmail1">Activity</label>
-
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select id="topic_id" name="topic_id[]" class="form-control">
+                                                            <option value="">Select Topic</option>
+                                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
                                                     </div>
+
+                                                    <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
 
                                                 </div>
                                                 <div class="teacher-div">
@@ -530,14 +610,28 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
-
-                                                        <label for="exampleInputEmail1">Activity</label>
-                                                        <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
-                                                        <span class="text-danger"><?php echo form_error('Activity'); ?></span>
-
-                                                    </div>
-
+                            <div class="form-group col-md-12">
+                                            <label for="exampleInputEmail1">Topics</label>
+                                            <select name="topic_id[]" class="form-control">
+                                                <option value="">Select Topic</option>
+                                            </select>
+                                            <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display:none">
+                                            <label for="exampleInputEmail1">Activity</label>
+                                            <input type="text" name="activity_id[]" id="activity_id" class="form-control activityclass">
+                                            <span class="text-danger"><?php echo form_error('Activity'); ?></span>
+                                        </div>
+                                        <div class="form-group col-md-6" style="display: none;">
+                                                <label for="activity_teacher_id">Teacher</label>
+                                                <select name="activity_teacher_id[]" id="activity_teacher_id" class="form-control activityclass">
+                                                    <option value="">Select Teacher</option>
+                                                    <?php foreach ($teacherlist as $staff): ?>
+                                                        <option ><?php echo $staff['name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <span class="text-danger"><?php echo form_error('activity_id'); ?></span>
+                                         </div>
                                                 </div>
                                                 <!-- <div class="teacher-div">
                                                     <div class="form-group col-md-12 text-center">
@@ -667,7 +761,9 @@
                                                         <span class="text-danger"><?php echo form_error('title'); ?></span>
 
                                                     </div>
-                                                    <div class="form-group col-md-12" style="display:none">
+                                                    
+                                                    
+                                                    <div class="form-group col-md-6" style="display:none">
 
                                                         <label for="exampleInputEmail1">Activity</label>
 
@@ -675,6 +771,22 @@
                                                         <span class="text-danger"><?php echo form_error('Activity'); ?></span>
 
                                                     </div>
+                                                 
+                                                   
+                                                    <div class="form-group col-md-6">
+    <label for="exampleInputEmail1">Teacher</label>
+    <select id="activity_teacher_id" name="activity_teacher_id[]" class="form-control activityclass eight_to_nine_activity_teacher">
+        <option value="">Select</option>
+        <?php foreach ($teacherlist as $staff): ?>
+            <option value="<?php echo $staff['name']; ?>">
+                <?php echo $staff['name']; ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <span class="text-danger"><?php echo form_error('title'); ?></span>
+</div>
+
+
 
                                                 </div>
                                                 <div class="teacher-div">
@@ -1694,7 +1806,18 @@
 
                         }
                     }
+                    if (msg.eight_to_nine_activity_teacher) {
+        $('.eight_to_nine_activity_teacher option').each(function() {
+            if ($(this).val() === msg.eight_to_nine_activity_teacher) {
+                $(this).prop('selected', true);
+            } else {
+                $(this).prop('selected', false);
+            }
+        });
+    }
 
+    // Show the modal after processing
+    $('#viewEventModal').modal('show');
                     for (let key in msg) {
                         if (key.endsWith('_subject')) {
 
@@ -1819,6 +1942,48 @@
 
 
     });
+
+
+
+
+    $(document).ready(function () {
+    // On subject change, fetch topics
+    $(document).on('change', '.subjectclass', function () {
+        var subject_id = $(this).val(); // Get the selected subject ID
+        var base_url = '<?php echo base_url(); ?>';
+
+        // Find the parent teacher-div and locate the corresponding topic dropdown
+        var teacherDiv = $(this).closest('.teacher-div');
+        var topicSelect = teacherDiv.find('.form-control[name="topic_id[]"]'); // Locate the topic dropdown in the same teacher-div
+
+        if (subject_id) {
+            $.ajax({
+                type: 'POST',
+                url: base_url + 'admin/weeklycalendarnew/getTopicsBySubject',
+                data: { subject_id: subject_id },
+                dataType: 'json',
+                success: function (response) {
+                    topicSelect.empty(); // Clear existing options
+                    topicSelect.append('<option value="">Select Topic</option>');
+
+                    if (response && response.length > 0) {
+                        $.each(response, function (index, topic) {
+                            topicSelect.append('<option value="' + topic.id + '">' + topic.topic + '</option>');
+                        });
+                    } else {
+                        topicSelect.append('<option value="">No Topics Available</option>');
+                    }
+                },
+                error: function () {
+                    alert('Error fetching topics. Please try again.');
+                }
+            });
+        } else {
+            topicSelect.empty().append('<option value="">Select Topic</option>');
+        }
+    });
+});
+
 
 
 

@@ -364,19 +364,23 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
-                                                <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
-
-
-
-
                                                 <label for="exampleInputEmail1">Assign Work</label>
                                                 <div class="dropify-wrapper" style="height: 32px;">
                                                     <div class="dropify-message">
@@ -442,14 +446,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
-                                                 <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -515,14 +527,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
- <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -588,14 +608,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
-                                                 <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -663,14 +691,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
-                                                     <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -736,13 +772,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-  <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -809,14 +854,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
- <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -882,14 +935,22 @@ $count++;
 
                                             </div>
                                             <div class="form-group col-md-3">
-
-                                                <label for="exampleInputEmail1">Topic</label>
-
-                                                     <textarea name="topic_teached" placeholder="Topic Teached"
-                                                    class="form-control" id="topic_id"></textarea>
-                                                <span class="text-danger"><?php echo form_error('title'); ?></span>
-
-                                            </div>
+                                                        <label for="exampleInputEmail1">Topics</label>
+                                                        <select autofocus="" id="topic_id" name="topic_id" class="form-control">
+                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                            <?php
+                                            foreach ($topiclist as $topic) {
+                                            ?>
+                                                <option value="<?php echo $topic['id'] ?>" <?php if (set_value('topic_id') == $topic['id'])
+                                                                                                echo "selected=selected"; ?>>
+                                                    <?php echo $topic['topic'] ?></option>
+                                            <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
+                                                        <span class="text-danger"><?php echo form_error('topic_id'); ?></span>
+                                                    </div>
                                             <div class="form-group col-md-3 ">
 
 
@@ -1447,7 +1508,7 @@ $(document).ready(function() {
 
         formData.append('teacher_id', teacher)
         formData.append('subject_id', subject)
-        formData.append('topic', topic)
+        formData.append('topic_id', topic)
         formData.append('calendarid', calendarid)
         formData.append('assigned_work', assigned_work)
         formData.append('period', period)

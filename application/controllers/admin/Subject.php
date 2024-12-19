@@ -24,7 +24,9 @@ class Subject extends Admin_Controller
         $data['title'] = 'Add Subject';
         $subject_result = $this->subject_model->get();
         $data['subjectlist'] = $subject_result;
-        // var_dump($data['subjectlist']);
+        $topicget = $this->subject_model->topicget();
+        $data['topiclist'] = $topicget;
+        // var_dump($data['subjectlist']);exit;
 
         $admin = $this->session->userdata('admin');
         $centre_id = $admin['centre_id'];
@@ -466,6 +468,56 @@ class Subject extends Admin_Controller
         redirect('admin/subject/index');
     }
 
+    // public function create()
+    // {
+    //     if (!$this->rbac->hasPrivilege('subject', 'can_add')) {
+    //         access_denied();
+    //     }
+    //     $data['title'] = 'Add subject';
+    //     $subject_result = $this->subject_model->get();
+    //     $data['subjectlist'] = $subject_result;
+    //     // var_dump($data['subjectlist']);exit;
+    //     //$this->form_validation->set_rules('name', 'Subject Name', 'trim|required|xss_clean|callback__check_name_exists');
+    //     $this->form_validation->set_rules('name', 'Subject Name', 'trim|required|xss_clean');
+    //     if ($this->input->post('code')) {
+    //         $this->form_validation->set_rules('code', 'Code', 'trim|required|callback__check_code_exists');
+    //     }
+
+    //     if ($this->form_validation->run() == false) {
+    //         $this->load->view('layout/header', $data);
+    //         $this->load->view('admin/subject/subjectList', $data);
+    //         $this->load->view('layout/footer', $data);
+    //     } else {
+
+    //         $admin = $this->session->userdata('admin');
+    //         $centre_id = $admin['centre_id'];
+    //         $topics = $this->input->post('topics');
+    //         $data = array(
+    //             'centre_id' => $centre_id,
+    //             'name' => $this->input->post('name'),
+    //             'code' => $this->input->post('code'),
+    //             'theory' => $this->input->post('theory'),
+    //             'viva' => $this->input->post('viva'),
+    //             'practical' => $this->input->post('practical'),
+    //             'lab' => $this->input->post('lab'),
+    //             'clinical'=>$this->input->post('clinical'),
+    //             'cocurricular' => $this->input->post('cocurricular'),
+                
+
+
+    //         );
+    //         // var_dump($data);exit;
+    //         $this->subject_model->add($data);
+
+    //         if (!empty($topics) && is_array($topics)) {
+    //             $this->subject_model->addTopics($subject_id, $topics); // Save topics
+    //         }
+    //         $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">Subject added successfully</div>');
+    //         redirect('admin/subject/index');
+    //     }
+    // }
+
+
     public function create()
     {
         if (!$this->rbac->hasPrivilege('subject', 'can_add')) {
@@ -474,21 +526,25 @@ class Subject extends Admin_Controller
         $data['title'] = 'Add subject';
         $subject_result = $this->subject_model->get();
         $data['subjectlist'] = $subject_result;
-        // var_dump($data['subjectlist']);exit;
-        //$this->form_validation->set_rules('name', 'Subject Name', 'trim|required|xss_clean|callback__check_name_exists');
+     
+    
         $this->form_validation->set_rules('name', 'Subject Name', 'trim|required|xss_clean');
+    
         if ($this->input->post('code')) {
             $this->form_validation->set_rules('code', 'Code', 'trim|required|callback__check_code_exists');
         }
-
+    
         if ($this->form_validation->run() == false) {
+            // Reload the form with errors
             $this->load->view('layout/header', $data);
             $this->load->view('admin/subject/subjectList', $data);
             $this->load->view('layout/footer', $data);
         } else {
-
             $admin = $this->session->userdata('admin');
             $centre_id = $admin['centre_id'];
+    
+            // Collect form inputs
+            $topics = $this->input->post('topics'); // Multiple topics array
             $data = array(
                 'centre_id' => $centre_id,
                 'name' => $this->input->post('name'),
@@ -497,18 +553,31 @@ class Subject extends Admin_Controller
                 'viva' => $this->input->post('viva'),
                 'practical' => $this->input->post('practical'),
                 'lab' => $this->input->post('lab'),
-                'clinical'=>$this->input->post('clinical'),
-
+                'clinical' => $this->input->post('clinical'),
                 'cocurricular' => $this->input->post('cocurricular'),
-
-
             );
-            // var_dump($data);exit;
-            $this->subject_model->add($data);
-            $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">Subject added successfully</div>');
+    
+            // Insert the subject
+            $subject_id = $this->subject_model->add($data);
+            // Add topics only if not empty
+            if (!empty($topics) && is_array($topics)) {
+                foreach ($topics as $topic) {
+                    if (!empty($topic)) { // Ensure no empty topic is added
+                        $topic_data = array(
+                            'subject_id' => $subject_id,
+                            'topic' =>$topic // Trim to remove unnecessary spaces
+                        );
+                        $this->subject_model->addTopics($topic_data); // Save each topic
+                    }
+                }
+            }
+    
+            // Success message and redirect
+            $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">Subject and topics added successfully</div>');
             redirect('admin/subject/index');
         }
     }
+    
 
     public function _check_name_exists()
     {
@@ -548,23 +617,34 @@ class Subject extends Admin_Controller
         if (!$this->rbac->hasPrivilege('subject', 'can_edit')) {
             access_denied();
         }
-        $subject_result = $this->subject_model->get();
-        $data['subjectlist'] = $subject_result;
+    
         $data['title'] = 'Edit Subject';
         $data['id'] = $id;
+        $subject_result = $this->subject_model->get();
+        $data['subjectlist'] = $subject_result;
+     
+        // Fetch existing subject data
         $subject = $this->subject_model->get($id);
         $data['subject'] = $subject;
+    
+        // Fetch existing topics for this subject
+        $data['topics'] = $this->subject_model->getTopicsBySubject($id);
+    
         $admin = $this->session->userdata('admin');
         $centre_id = $admin['centre_id'];
-        // var_dump( $centre_id);exit;
-        $data['centre_id']=$centre_id;
+        $data['centre_id'] = $centre_id;
+    
+        // Set form validation rules
         $this->form_validation->set_rules('name', 'Subject', 'trim|required|xss_clean');
+    
         if ($this->form_validation->run() == false) {
+            // If validation fails, load the edit form with existing data
             $this->load->view('layout/header', $data);
             $this->load->view('admin/subject/subjectEdit', $data);
             $this->load->view('layout/footer', $data);
         } else {
-            $data = array(
+            // Collect form input
+            $subject_data = array(
                 'id' => $id,
                 'name' => $this->input->post('name'),
                 'code' => $this->input->post('code'),
@@ -573,17 +653,35 @@ class Subject extends Admin_Controller
                 'practical' => $this->input->post('practical'),
                 'lab' => $this->input->post('lab'),
                 'clinical' => $this->input->post('clinical'),
-
                 'cocurricular' => $this->input->post('cocurricular'),
-
-
-
             );
-            $this->subject_model->add($data);
+    
+            // Update subject details
+            $this->subject_model->update($subject_data);
+    
+            // Handle topics
+            $topics = $this->input->post('topics'); // Get the new topics from the form
+    
+            // Delete old topics for the subject
+            $this->subject_model->deleteTopicsBySubject($id);
+    
+            // If new topics are provided, insert them
+            if (!empty($topics) && is_array($topics)) {
+                foreach ($topics as $topic) {
+                    $topic_data = array(
+                        'subject_id' => $id,
+                        'topic' => $topic
+                    );
+                    $this->subject_model->addTopics($topic_data); // Insert new topics
+                }
+            }
+    
+            // Set success message and redirect
             $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">Subject updated successfully</div>');
             redirect('admin/subject/index');
         }
     }
+    
 
     public function getSubjctByClassandSection()
     {

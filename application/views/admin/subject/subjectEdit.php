@@ -82,7 +82,30 @@
                                     <span class="text-danger"><?php echo form_error('code'); ?></span>
                                 </div>
                                 
-                                
+                                <div class="form-group">
+    <label for="exampleInputEmail1"><?php echo "Subject Topics"; ?></label>
+    <div id="topicsContainer">
+        <!-- Loop through existing topics -->
+        <?php if (!empty($topics)) { ?>
+            <?php foreach ($topics as $key => $topic) { ?>
+                <div class="input-group mb-2 topic-input">
+                    <input name="topics[]" placeholder="Enter a topic" type="text" class="form-control" value="<?php echo htmlspecialchars($topic['topic']); ?>" />
+                    <button type="button" class="btn btn-success btn-sm add-topic me-2">Add</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-topic">Remove</button>
+                </div>
+            <?php } ?>
+        <?php } else { ?>
+            <!-- If no existing topics, show one blank input field -->
+            <div class="input-group mb-2 topic-input">
+                <input name="topics[]" placeholder="Enter a topic" type="text" class="form-control" />
+                <button type="button" class="btn btn-success btn-sm add-topic me-2">Add</button>
+                <button type="button" class="btn btn-danger btn-sm remove-topic">Remove</button>
+            </div>
+        <?php } ?>
+    </div>
+    <span class="text-danger"><?php echo form_error('topics[]'); ?></span>
+</div>
+
                                  <!--<div class="form-group"><br>
                                     <label for="exampleInputEmail1"><?php //echo $this->lang->line('subject_code_practical'); ?></label>
                                     <input id="category" name="code1" placeholder="" type="text" class="form-control"  value="<?php //echo set_value('code1',$subject['code2']); ?>" />
@@ -121,7 +144,8 @@
                                     <tr>
                                         <th><?php echo $this->lang->line('subject'); ?></th>
                                         <th><?php echo $this->lang->line('subject_code'); ?></th>
-                                         <th><?php echo $this->lang->line('theory/practical/clinical/lab'); ?></th>
+                                        <th><?php echo 'Theory/Practical/Lab/Clinical'; ?></th>
+                                         <th><?php echo 'Topics'; ?></th>
                                       <?php /*?>  
                                         <th><?php echo $this->lang->line('subject'); ?>
                                             <?php echo $this->lang->line('type'); ?>
@@ -139,6 +163,9 @@
                                             <td class="mailbox-name"> <?php echo $subject['name'] ?></td>
                                             <td class="mailbox-name"><?php echo $subject['code'] ?></td>
                                             <td class="mailbox-name"><?php echo $subject['theory']."".$subject['practical'] ."".$subject['lab']." ".$subject['clinical']."".$subject['lab']?> </td>
+                                            <td class="mailbox-name">
+                                                <?php echo !empty($subject['topics']) ? $subject['topics'] : 'No Topics'; ?>
+                                            </td>
                                             <td class="mailbox-date pull-right no-print">
                                                 <?php
                                                 if ($this->rbac->hasPrivilege('subject', 'can_edit')) {
@@ -203,4 +230,23 @@
         mywindow.document.close();
         mywindow.print();
     }
+</script>
+<script>
+    $(document).ready(function () {
+        // Add new topic input
+        $(document).on('click', '.add-topic', function () {
+            let newInput = `
+                <div class="input-group mb-2 topic-input">
+                    <input name="topics[]" placeholder="Enter a topic" type="text" class="form-control" />
+                    <button type="button" class="btn btn-success btn-sm add-topic me-2">Add</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-topic">Remove</button>
+                </div>`;
+            $('#topicsContainer').append(newInput);
+        });
+
+        // Remove topic input
+        $(document).on('click', '.remove-topic', function () {
+            $(this).closest('.topic-input').remove();
+        });
+    });
 </script>

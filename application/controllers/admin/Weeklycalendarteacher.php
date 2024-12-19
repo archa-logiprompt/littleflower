@@ -150,6 +150,7 @@ class Weeklycalendarteacher extends Admin_Controller
                     ])->get('period_timing')->row();
 
                     $data['isupdate'] = !empty($data['weekcalendar']);
+                    $data['topiclist'] = $this->db->select('*')->from('subject_topics')->get()->result_array();
 
 
 
@@ -579,7 +580,7 @@ class Weeklycalendarteacher extends Admin_Controller
             'teacher_id' => $userdata,
             'subject_id' => $this->input->post('subject_id'),
             'calendar_id' => $this->input->post('calendarid'),
-            'topic' => $this->input->post('topic'),
+            'topic' => $this->input->post('topic_id'),
             'works' => $img_name,
             'assigned_teacher' => $this->input->post('teacher_id'),
             'period' => $this->input->post('period'),
@@ -587,7 +588,7 @@ class Weeklycalendarteacher extends Admin_Controller
             'is_class' => 1
 
         ];
-
+// var_dump($insert_array);exit;
 
         if ($this->input->post('teacher_id') == $userdata) {
 

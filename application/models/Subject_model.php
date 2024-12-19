@@ -9,16 +9,75 @@ class Subject_model extends CI_Model {
         parent::__construct();
     }
 
-    public function get($id = null) {
 
-        $admin=$this->session->userdata('admin');
-        $centre_id=$admin['centre_id'];
-        $this->db->select()->from('subjects');
-        $this->db->where('centre_id',$centre_id);
+    public function addTopics($topics)
+{
+   
+    $this->db->insert('subject_topics',$topics);
+}
+public function deleteTopicsBySubject($subject_id)
+{
+    $this->db->where('subject_id', $subject_id);
+    $this->db->delete('subject_topics');
+}
+public function update($data)
+{
+    $this->db->where('id', $data['id']);
+    $this->db->update('subjects', $data);
+}
+
+
+public function getTopicsBySubject($subject_id) {
+    $this->db->select('topic');
+    $this->db->from('subject_topics');
+    $this->db->where('subject_id', $subject_id);
+    $query = $this->db->get();
+    // echo $this->db->last_query();exit;
+    return $query->result_array(); // Return topics as an array
+}
+public function getTopicsBySubjectforweekly($subject_id) {
+    $this->db->select('subjects.id as sub_id, subject_topics.*, teacher_subjects.subject_id as tsubid');
+$this->db->from('subject_topics');
+$this->db->join('teacher_subjects', 'subject_topics.subject_id = teacher_subjects.subject_id'); // Join teacher_subjects first
+$this->db->join('subjects', 'subjects.id = teacher_subjects.subject_id'); // Then join subjects
+$this->db->where('teacher_subjects.id', $subject_id);
+
+    $query = $this->db->get();
+    // echo $this->db->last_query();exit;
+    return $query->result_array(); 
+}
+public function get($id = null) {
+    $admin = $this->session->userdata('admin');
+    $centre_id = $admin['centre_id'];
+
+    $this->db->select('subjects.*, GROUP_CONCAT(subject_topics.topic SEPARATOR ", ") as topics')
+             ->from('subjects')
+             ->join('subject_topics', 'subject_topics.subject_id = subjects.id', 'left')
+             ->where('subjects.centre_id', $centre_id)
+             ->group_by('subjects.id'); // Group by subject to combine topics
+
+    if ($id != null) {
+        $this->db->where('subjects.id', $id);
+        $query = $this->db->get();
+        return $query->row_array(); // Return a single subject
+    } else {
+        $this->db->order_by('subjects.name', 'ASC');
+        $query = $this->db->get();
+        return $query->result_array(); // Return all subjects with combined topics
+    }
+}
+
+
+
+  public function topicget($id = null) {
+
+     
+        $this->db->select()->from('subject_topics');
+       
         if ($id != null) {
             $this->db->where('id', $id);
         } else {
-            $this->db->order_by('name');
+            $this->db->order_by('topic');
         }
         $query = $this->db->get();
         if ($id != null) {
@@ -27,8 +86,6 @@ class Subject_model extends CI_Model {
             return $query->result_array();
         }
     }
-
-  
 	
 	public function remove($id) {
         $this->db->where('id', $id);

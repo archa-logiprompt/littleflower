@@ -307,6 +307,7 @@ class Weeklycalendarnew extends Admin_Controller
             $period_id = $this->input->post('period_id');
 
             $this->db->where('id', $period_id)->update('period_timing', $insert_array);
+      
         } else {
 
             $this->db->insert('period_timing', $insert_array);
@@ -1397,7 +1398,8 @@ class Weeklycalendarnew extends Admin_Controller
         $userdata = $this->customlib->getUserData();
         $data['isupdate'] = false;
         $data['issearch'] = false;
-
+        $teacherlist = $this->staff_model->getStaffbyrole($role = 2);
+        $data['teacherlist']=$teacherlist;
         $data['period_list'] = $this->db->where([
             'class_id' => $data['class_id'],
             'section_id' => $data['section_id'],
@@ -1446,7 +1448,12 @@ class Weeklycalendarnew extends Admin_Controller
             $this->load->view('layout/footer', $data);
         }
     }
-
+    public function getTopicsBySubject() {
+        $subject_id = $this->input->post('subject_id');
+        $topics = $this->subject_model->getTopicsBySubjectforweekly($subject_id); // Replace with your model method
+        echo json_encode($topics);
+    }
+    
     public function savecalendar()
     {
         $subjects = $this->input->post('subject_id');
@@ -1457,14 +1464,15 @@ class Weeklycalendarnew extends Admin_Controller
                 break;
             }
         }
-
-
-
+    
         $teachers = $this->input->post('teacher_id');
         $date = $this->input->post('event_dates');
         $class = $this->input->post('hidden_class');
         $section = $this->input->post('hidden_section');
         $activity = $this->input->post('activity_id');
+        $activity_teacher_id = $this->input->post('activity_teacher_id');
+        $topic = $this->input->post('topic_id');
+    
         $isactivity = 0;
         foreach ($activity as $activities) {
             if ($activities != "") {
@@ -1472,17 +1480,20 @@ class Weeklycalendarnew extends Admin_Controller
                 break;
             }
         }
+        
+        // Check if either activity or subject is provided
         if ($isactivity == 0 && $issubject == 0) {
             echo json_encode('fail');
         } else {
             $isHoliday = in_array('holiday', $activity);
-
+    
+            // Get the active period ID based on class and section
             $active_period_id = $this->db->where([
                 'class_id' => $class,
                 'section_id' => $section,
                 'is_active' => 1
             ])->get('period_timing')->row()->id;
-
+    
             // Define an array to hold the values for insertion
             $insert_array = [
                 'class_id' => $class,
@@ -1491,20 +1502,28 @@ class Weeklycalendarnew extends Admin_Controller
                 'period_id' => $active_period_id,
                 'eight_to_nine_subject' => $isHoliday ? 'holiday' : $subjects[0],
                 'eight_to_nine_teacher' => $isHoliday ? 'holiday' : $teachers[0],
+                'eight_to_nine_topic' => $isHoliday ? 'holiday' : $topic[0],  // Added topic for the first period
                 'nine_to_ten_subject' => $isHoliday ? 'holiday' : $subjects[1],
                 'nine_to_ten_teacher' => $isHoliday ? 'holiday' : $teachers[1],
+                'nine_to_ten_topic' => $isHoliday ? 'holiday' : $topic[1],  // Added topic for the second period
                 'ten_to_eleven_subject' => $isHoliday ? 'holiday' : $subjects[2],
                 'ten_to_eleven_teacher' => $isHoliday ? 'holiday' : $teachers[2],
+                'ten_to_eleven_topic' => $isHoliday ? 'holiday' : $topic[2],  // Added topic for the third period
                 'eleven_to_twelve_subject' => $isHoliday ? 'holiday' : $subjects[3],
                 'eleven_to_twelve_teacher' => $isHoliday ? 'holiday' : $teachers[3],
+                'eleven_to_twelve_topic' => $isHoliday ? 'holiday' : $topic[3],  // Added topic for the fourth period
                 'twelve_to_one_subject' => $isHoliday ? 'holiday' : $subjects[4],
                 'twelve_to_one_teacher' => $isHoliday ? 'holiday' : $teachers[4],
+                'twelve_to_one_topic' => $isHoliday ? 'holiday' : $topic[4],  // Added topic for the fifth period
                 'two_to_three_subject' => $isHoliday ? 'holiday' : $subjects[5],
                 'two_to_three_teacher' => $isHoliday ? 'holiday' : $teachers[5],
+                'two_to_three_topic' => $isHoliday ? 'holiday' : $topic[5],  // Added topic for the sixth period
                 'three_to_four_subject' => $isHoliday ? 'holiday' : $subjects[6],
                 'three_to_four_teacher' => $isHoliday ? 'holiday' : $teachers[6],
+                'three_to_four_topic' => $isHoliday ? 'holiday' : $topic[6],  // Added topic for the seventh period
                 'four_to_five_subject' => $isHoliday ? 'holiday' : $subjects[7],
                 'four_to_five_teacher' => $isHoliday ? 'holiday' : $teachers[7],
+                'four_to_five_topic' => $isHoliday ? 'holiday' : $topic[7],  // Added topic for the eighth period
                 'eight_to_nine_activity' => $isHoliday ? 'holiday' : $activity[0],
                 'nine_to_ten_activity' => $isHoliday ? 'holiday' : $activity[1],
                 'ten_to_eleven_activity' => $isHoliday ? 'holiday' : $activity[2],
@@ -1513,17 +1532,32 @@ class Weeklycalendarnew extends Admin_Controller
                 'two_to_three_activity' => $isHoliday ? 'holiday' : $activity[5],
                 'three_to_four_activity' => $isHoliday ? 'holiday' : $activity[6],
                 'four_to_five_activity' => $isHoliday ? 'holiday' : $activity[7],
-            ];
 
+
+                'eight_to_nine_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[0],
+                'nine_to_ten_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[1],
+                'ten_to_eleven_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[2],
+                'eleven_to_twelve_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[3],
+                'twelve_to_one_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[4],
+                'two_to_three_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[5],
+                'three_to_four_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[6],
+                'four_to_five_activity_teacher' => $isHoliday ? 'holiday' : $activity_teacher_id[7],
+
+
+
+
+
+
+
+            ];
             // Insert data into the 'weekly_calendar' table
             $this->db->insert('weekly_calendar', $insert_array);
-
+            // echo $this->db->last_query();exit;
+    
             echo json_encode('success');
         }
-
-        // Check if any of the fields contain 'holiday'
-
     }
+    
 
 
     public function edit($id)
@@ -1670,7 +1704,8 @@ class Weeklycalendarnew extends Admin_Controller
         $teachers = $this->input->post('teacher_id');
         $id = $this->input->post('hidden_id');
         $activity = $this->input->post('activity_id');
-
+        $activity_teacher_id = $this->input->post('activity_teacher_id');
+        $topic = $this->input->post('topic_id');
         $insert_array = [
 
             'eight_to_nine_subject' => $subjects[0],
@@ -1697,6 +1732,24 @@ class Weeklycalendarnew extends Admin_Controller
             'two_to_three_activity' => $activity[5],
             'three_to_four_activity' => $activity[6],
             'four_to_five_activity' => $activity[7],
+            'eight_to_nine_topic' =>  $topic[0], 
+            'nine_to_ten_topic' => $topic[1],
+           'ten_to_eleven_topic' => $topic[2], 
+           'eleven_to_twelve_topic' =>$topic[3],  
+            'twelve_to_one_topic' => $topic[4], 
+           'two_to_three_topic' =>$topic[5],
+           'three_to_four_topic' =>$topic[6],
+            'four_to_five_topic' => $topic[7], 
+           
+
+            'eight_to_nine_activity_teacher' =>$activity_teacher_id[0],
+            'nine_to_ten_activity_teacher' => $activity_teacher_id[1],
+            'ten_to_eleven_activity_teacher' =>$activity_teacher_id[2],
+            'eleven_to_twelve_activity_teacher' =>$activity_teacher_id[3],
+            'twelve_to_one_activity_teacher' => $activity_teacher_id[4],
+            'two_to_three_activity_teacher' => $activity_teacher_id[5],
+            'three_to_four_activity_teacher' => $activity_teacher_id[6],
+            'four_to_five_activity_teacher' => $activity_teacher_id[7],
         ];
 
         $this->db->where('id', $id)->update('weekly_calendar', $insert_array);
@@ -1725,7 +1778,7 @@ class Weeklycalendarnew extends Admin_Controller
         }
 
         $timetablearr = array_merge($timetable, $periods);
-
+// var_dump($timetablearr);exit;
         echo json_encode($timetablearr);
     }
 

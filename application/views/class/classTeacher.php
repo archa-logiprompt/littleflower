@@ -67,7 +67,7 @@
                                         ?>
                                         <div class="checkbox">
                                             <label>
-                                                <input type="checkbox" name="teachers[]" value="<?php echo $tvalue['id'] ?>" <?php echo set_checkbox('teachers[]', $tvalue['id']); ?> ><?php echo $tvalue['name'] ?>
+                                                <input type="checkbox" name="teachers[]" value="<?php echo $tvalue['id'] ?>" <?php echo set_checkbox('teachers[]', $tvalue['id']); ?> ><?php echo $tvalue['name']." ".$tvalue['surname'] ?>
                                             </label>
                                         </div>
                                         <?php
@@ -142,7 +142,7 @@
                                                 <?php foreach ($tlist[$i] as $key => $tsvalue) {
                                                     ?>
 
-                                                    <?php echo $tsvalue["name"] . "<br/>"; ?>
+                                                    <?php echo $tsvalue["name"] ." ".$tsvalue['surname']; "<br/>"; ?>
                                                     <input type="hidden"  name="teacherid[]" value="<?php echo $tsvalue["id"] ?>" >
                                                 <?php } ?>
                                             </td>
