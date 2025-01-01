@@ -2,16 +2,16 @@
     <section class="content-header">
         <h1><i class="fa fa-sitemap"></i>
             <?php echo $this->lang->line('human_resource'); ?>
-            <!-- <?php
-            if ($this->rbac->hasPrivilege('approve_leave_by_class_coordinator', 'can_add')) {
+            <?php
+            if ($this->rbac->hasPrivilege('approve_leave_request', 'can_add')) {
                 ?>
-                <small class="pull-right"><a href="#addleave" onclick="addSleave()" role="button"
-                        class="btn btn-primary btn-sm checkbox-toggle pull-right edit_setting"
-                        data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">
-                        <?php echo $this->lang->line('add'); ?>
-                        <?php echo $this->lang->line('leave_request'); ?>
-                    </a></small>
-            <?php } ?> -->
+                <!--<small class="pull-right"><a href="#addleave" onclick="addLeave()" role="button"-->
+                <!--        class="btn btn-primary btn-sm checkbox-toggle pull-right edit_setting"-->
+                <!--        data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">-->
+                <!--        <?php echo $this->lang->line('add'); ?>-->
+                <!--        <?php echo $this->lang->line('leave_request'); ?>-->
+                <!--    </a></small>-->
+            <?php } ?>
         </h1>
 
 
@@ -21,153 +21,749 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="box box-primary">
-                    <div class="box-header ptbnull">
-                        <h3 class="box-title titlefix">
-                            <?php echo $this->lang->line('approve_leave_request'); ?>
-                        </h3>
-                    </div><!-- /.box-header -->
-                    <div class="box-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="tab-pane active table-responsive no-padding">
-                                    <div class="download_label">
-                                        <?php echo $this->lang->line('approve_leave_request'); ?>
-                                    </div>
-                                    <table class="table table-striped table-bordered table-hover example">
-                                        <thead>
+                <?php  if ($usertype == "Super Admin") { ?>
+                    <div class="box box-primary">
+                        <div class="box-header ptbnull">
+                            <h3 class="box-title titlefix">
+                                <?php echo $this->lang->line('approve_leave_request'); ?>
+                            </h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-pane active -table-responsive no-padding" id="no-more-tables">
+                                        <div class="download_label">
+                                            <?php echo $this->lang->line('approve_leave_request'); ?>
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover example">
+                                            <thead>
 
-                                            <th>
-                                                <?php echo $this->lang->line('staff'); ?>
-                                            </th>
-                                            <th>
-                                                <?php echo 'leave_type(method)'; ?>
-                                            </th>
-                                            <th>
-                                                <?php echo $this->lang->line('leave'); ?>
-                                                <?php echo $this->lang->line('date'); ?>
-                                            </th>
-                                            <th>
-                                                <?php echo $this->lang->line('days'); ?>
-                                            </th>
-                                            <th>
-                                                <?php echo $this->lang->line('apply'); ?>
-                                                <?php echo $this->lang->line('date'); ?>
-                                            </th>
-                                            <th>
-                                                <?php echo $this->lang->line('Note'); ?>
-                                            </th>
-                                            <th>
-                                                <?php echo $this->lang->line('status'); ?>
-                                            </th>
-                                            <th class="text-right no-print">
-                                                <?php echo $this->lang->line('action'); ?>
-                                            </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('staff'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo 'Leave Type (Method)'; ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('leave'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('days'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('apply'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('status'); ?>
+                                                </th>
+                                                <th class="text-right no-print">
+                                                    <?php echo $this->lang->line('action'); ?>
+                                                </th>
 
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $i = 0;
-                                            foreach ($leave_request as $key => $value) { ?>
-                                                <tr>
-
-                                                    <td><span data-toggle="popover" class="detail_popover"
-                                                            data-original-title="" title="">
-                                                            <?php echo $value['name'] . " " . $value['surname']; ?>
-                                                        </span>
-                                                        <div class="fee_detail_popover" style="display: none">
-                                                            <?php echo $this->lang->line('staff_id'); ?>:
-                                                            <?php echo $value['employee_id']; ?>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $value["type"] ?> (
-                                                        <?php echo $value["leave_method"] ?>)
-                                                    </td>
-                                                    <td>
-                                                        <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
-                                                        -
-                                                        <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
-                                                    </td>
-
-                                                    <td>
-                                                        <?php echo $value["leave_days"]; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php echo $value["employee_remark"]; ?>
-                                                    </td>
-                                                    <?php
-                                                    if ($value["status"] == "approve") {
-                                                        $label = "class='label label-success'";
-                                                    } else if ($value["status"] == "pending") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "1") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "2") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "3") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "disapprove") {
-                                                        $label = "class='label label-danger'";
-                                                    }
-                                                    ?>
-                                                    <td><span data-toggle="popover" class="detail_popover"
-                                                            data-original-title="" title=""><small <?php echo $label ?>>
-                                                                <?php if ($value['status'] == 1 || $value['status'] == 2 || $value['status'] == 3 ||$value['status'] == 4 ||$value['status'] == 5  ) {
-                                                                    echo "Pending";
-                                                                } else {
-                                                                    echo $value["status"];
-                                                                }
-                                                                ?>
-                                                            </small></span>
-
-                                                        <div class="fee_detail_popover" style="display: none">
-                                                            <?php echo "Submitted By: " . $value['applied_by']; ?>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-
-                                                        <?php if ($value['status'] == "pending") {
-                                                            $path = "staffleaverequest";
-                                                            $status = "5"; ?>
-
-                                                            <a href="<?php echo base_url("admin/leaverequest/updateleaverequest/");
-                                                            echo $path . '/' . $value['id'] . '/' . $status ?>"
-                                                                class="btn btn-success btn-sm">Approve</a>
-
-                                                            <a href="<?php echo base_url("admin/leaverequest/updateleaverequest/");
-                                                            echo $path . '/' . $value['id'] . '/disapprove'  ?>"
-                                                                class="btn btn-danger btn-sm">Reject</a>
-                                                        <?php } else if ($value['status'] == "1") {
-                                                            echo "Approved by Class Coordinator";
-                                                        } else if ($value['status'] == "2") {
-                                                            echo "Approved by HOD";
-                                                        } else if ($value['status'] == "3") {
-                                                            echo "Approved by UG/PG Coordinator";
-                                                        }
-                                                        else if ($value['status'] == "3") {
-                                                            echo "Approved by Admin";
-                                                        } 
-                                                        ?>
-                                                    </td>
-
-                                                </tr>
+                                            </thead>
+                                            <tbody>
                                                 <?php
-                                                $i++;
-                                            }
-                                            ?>
+                                                $i = 0;
+
+                                                foreach ($approveLeave as $key => $value) {
+                                                    ?>
+                                                    <tr>
+
+                                                        <td><span data-toggle="popover" class="detail_popover"
+                                                                data-original-title="" title="">
+                                                                <?php echo ($value['applied_by']); ?>
+                                                            </span>
+                                                            <div class="fee_detail_popover" style="display: none">
+                                                                <?php echo $this->lang->line('staff_id'); ?>:
+                                                                <?php echo $value['employee_id']; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $value["type"] ?> 
+                                                            <?php echo $value["leave_method"] ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
+                                                            -
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php echo $value["leave_days"]; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if ($value['status'] == 0) {
+                                                                ?>
+                                                                <form
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="approve" name="status">
+                                                                    <button class="btn-sm btn-success">Approve</button>
+                                                                </form>
+                                                                <form
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="4" name="status">
+                                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                                </form>
+                                                                <?php
+                                                            } else if ($value['status'] == 1) {
+                                                                echo "Approved by Coordinator";
+                                                            } else if ($value['status'] == 2) { ?>
+                                                                        <form
+                                                                            action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                            method="post" accept-charset="utf-8">
+                                                                            <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                                name="id">
+                                                                            <input type="hidden" value="approve" name="status">
+                                                                            <button class="btn-sm btn-success">Approve</button>
+                                                                        </form>
+                                                                        <form
+                                                                            action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                            method="post" accept-charset="utf-8">
+                                                                            <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                                name="id">
+                                                                            <input type="hidden" value="4" name="status">
+                                                                            <button class="btn-sm btn-danger">Reject</button>
+                                                                        </form>
+
+                                                                <?php
+                                                            } else if ($value['status'] == 3) {
+                                                                echo "Approved";
+                                                            } ?>
+                                                        </td>
+
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                }
+                                                ?>
 
 
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                <?php } elseif ($usertype == "HOD") { ?>
+                  
+                    <div class="box box-primary">
+                        <div class="box-header ptbnull">
+                            <h3 class="box-title titlefix">
+                                <?php echo $this->lang->line('approve_leave_request'); ?>
+                            </h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-pane active -table-responsive no-padding" id="no-more-tables">
+                                        <div class="download_label">
+                                            <?php echo $this->lang->line('approve_leave_request'); ?>
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover -example">
+                                            <thead>
+
+                                                <th>
+                                                    <?php echo $this->lang->line('staff'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo 'Leave Type (Method)'; ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('leave'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('days'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('apply'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('status'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo "File" ?>
+                                                </th>
+                                                <th class="text-right no-print">
+                                                    <?php echo $this->lang->line('action'); ?>
+                                                </th>
+
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 0;
+
+                                                foreach ($leave_request as $key => $value) {
+                                                    ?>
+                                                    <tr>
+
+                                                        <td data-title="<?php echo $this->lang->line('staff'); ?>">
+                                                            <span data-toggle="popover" class="detail_popover"
+                                                                data-original-title="" title="">
+                                                                <?php echo ($value['applied_by']); ?>
+                                                            </span>
+                                                            <div class="fee_detail_popover" style="display: none">
+                                                                <?php echo $this->lang->line('staff_id'); ?>:
+                                                                <?php echo $value['employee_id']; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="<?php echo 'Leave Type (Method)'; ?>">
+                                                            <?php echo $value["type"] ?> 
+                                                            <?php echo $value["leave_method"] ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('leave'); ?> <?php echo $this->lang->line('date'); ?>">
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
+                                                            -
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
+                                                        </td>
+
+                                                        <td data-title="<?php echo $this->lang->line('days'); ?>">
+                                                            <?php echo $value["leave_days"]; ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('apply'); ?> <?php echo $this->lang->line('date'); ?>">
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('status'); ?>">
+                                                            <?php 
+                                                                if ($value['status'] == "0") {
+                                                                    echo '<span class="text-success">Pending</span>';                                                       
+                                                                } else{
+                                                                    echo '&numsp;';
+                                                                }
+                                                            ?>
+                                                        </td>
+                                                        <td>
+    <?php if (!empty($value["document_file"])): ?>
+        <a href="<?php echo base_url('uploads/staff_documents/' . $value["staff_id"] . '/' . $value["document_file"]); ?>" 
+           download 
+           class="btn btn-link" 
+           title="Download">
+           <?php echo $value["document_file"]; ?>
+        </a>
+    <?php else: ?>
+        No file available
+    <?php endif; ?>
+</td>
+                                                        <td data-title="<?php echo $this->lang->line('action'); ?>">
+                                                            <?php
+                                                                if ($value['status'] == '0') {
+                                                           ?>
+                                                           <form
+                                                                action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                method="post" accept-charset="utf-8">
+                                                                <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                    name="id">
+                                                                <input type="hidden" value="1" name="status">
+                                                                <button class="btn-sm btn-success">Approve</button>
+                                                            </form>
+                                                            <form
+                                                                action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                method="post" accept-charset="utf-8">
+                                                                <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                    name="id">
+                                                                <input type="hidden" value="4" name="status">
+                                                                <button class="btn-sm btn-danger">Reject</button>
+                                                            </form>
+                                                            <?php } else{
+                                                                echo '&numsp;';
+                                                            } ?>
+                                                        </td>
+
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                }
+                                                ?>
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } elseif ($usertype == "PRINCIPAL") { ?>
+                    <div class="box box-primary">
+                        <div class="box-header ptbnull">
+                            <h3 class="box-title titlefix">
+                                <?php echo $this->lang->line('approve_leave_request'); ?>
+                            </h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-pane active -table-responsive no-padding" id="no-more-tables">
+                                        <div class="download_label">
+                                            <?php echo $this->lang->line('approve_leave_request'); ?>
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover -example">
+                                            <thead>
+
+                                                <th>
+                                                    <?php echo $this->lang->line('staff'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo 'Leave type(Method)'; ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('leave'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('days'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('apply'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('status'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo "File"?>
+                                                </th>
+                                                <th class="-text-right no-print">
+                                                    <?php echo $this->lang->line('action'); ?>
+                                                </th>
+
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 0;
+
+                                                foreach ($leave_request as $key => $value) {
+                                                    ?>
+                                                    <tr>
+
+                                                        <td data-title="<?php echo $this->lang->line('staff'); ?>">
+                                                            <span data-toggle="popover" class="detail_popover"
+                                                                data-original-title="" title="">
+                                                                <?php echo ($value['applied_by']); ?>
+                                                            </span>
+                                                            <div class="fee_detail_popover" style="display: none">
+                                                                <?php echo $this->lang->line('staff_id'); ?>:
+                                                                <?php echo $value['employee_id']; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td data-title="<?php echo 'Leave type(Method)'; ?>">
+                                                            <?php echo $value["type"] ?> 
+                                                            <?php echo $value["leave_method"] ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('leave'); ?> <?php echo $this->lang->line('date'); ?>">
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
+                                                            -
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
+                                                        </td>
+
+                                                        <td data-title="<?php echo $this->lang->line('days'); ?>">
+                                                            <?php echo $value["leave_days"]; ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('apply'); ?> <?php echo $this->lang->line('date'); ?>">
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
+                                                        </td>
+                                                        <td data-title="<?php echo $this->lang->line('status'); ?>">
+                                                            <?php if ($value['status'] == '1') {
+                                                                echo "Approved by HOD";
+                                                            } else if ($value['status'] == '5') {
+                                                                echo "Approved";
+                                                            }else{
+                                                                echo '&numsp;';
+                                                            } 
+                                                            ?>
+                                                        </td>
+                                                        <td>
+    <?php if (!empty($value["document_file"])): ?>
+        <a href="<?php echo base_url('uploads/staff_documents/' . $value["staff_id"] . '/' . $value["document_file"]); ?>" 
+           download 
+           class="btn btn-link" 
+           title="Download">
+           <?php echo $value["document_file"]; ?>
+        </a>
+    <?php else: ?>
+        No file available
+    <?php endif; ?>
+</td>
+                                                        <td data-title="<?php echo $this->lang->line('action'); ?>">
+                                                            <?php 
+                                                                if ($value['status'] == '1') {
+                                                            ?>
+                                                                <form class="d-inline-block"
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="2" name="status">
+                                                                    <button class="btn-sm btn-success">Approve</button>
+                                                                </form>
+                                                                <form class="d-inline-block"
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="4" name="status">
+                                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                                </form>
+                                                            <?php 
+                                                                } else if ($value['status'] == '2') { 
+                                                            ?>
+                                                                <form class="d-inline-block"
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="3" name="status">
+                                                                    <button class="btn-sm btn-success">Approve</button>
+                                                                </form>
+                                                                <form class="d-inline-block"
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="4" name="status">
+                                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                                </form>
+                                                            <?php 
+                                                                } else{
+                                                                echo '&numsp;';
+                                                            }
+                                                            ?>
+                                                        </td>
+
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                }
+                                                ?>
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php }
+elseif ($usertype == "Director") { ?>
+    <div class="box box-primary">
+        <div class="box-header ptbnull">
+            <h3 class="box-title titlefix">
+                <?php echo $this->lang->line('approve_leave_request'); ?>
+            </h3>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tab-pane active -table-responsive no-padding" id="no-more-tables">
+                        <div class="download_label">
+                            <?php echo $this->lang->line('approve_leave_request'); ?>
+                        </div>
+                        <table class="table table-striped table-bordered table-hover -example">
+                            <thead>
+
+                                <th>
+                                    <?php echo $this->lang->line('staff'); ?>
+                                </th>
+                                <th>
+                                    <?php echo 'Leave type(Method)'; ?>
+                                </th>
+                                <th>
+                                    <?php echo $this->lang->line('leave'); ?>
+                                    <?php echo $this->lang->line('date'); ?>
+                                </th>
+                                <th>
+                                    <?php echo $this->lang->line('days'); ?>
+                                </th>
+                                <th>
+                                    <?php echo $this->lang->line('apply'); ?>
+                                    <?php echo $this->lang->line('date'); ?>
+                                </th>
+                                <th>
+                                    <?php echo $this->lang->line('status'); ?>
+                                </th>
+                                <th>
+                                    <?php echo "File" ?>
+                                </th>
+                                <th class="-text-right no-print">
+                                    <?php echo $this->lang->line('action'); ?>
+                                </th>
+
+                            </thead>
+                            <tbody>
+                                <?php
+                                $i = 0;
+
+                                foreach ($leave_request as $key => $value) {
+                                    ?>
+                                    <tr>
+
+                                        <td data-title="<?php echo $this->lang->line('staff'); ?>">
+                                            <span data-toggle="popover" class="detail_popover"
+                                                data-original-title="" title="">
+                                                <?php echo ($value['applied_by']); ?>
+                                            </span>
+                                            <div class="fee_detail_popover" style="display: none">
+                                                <?php echo $this->lang->line('staff_id'); ?>:
+                                                <?php echo $value['employee_id']; ?>
+                                            </div>
+                                        </td>
+                                        <td data-title="<?php echo 'Leave type(Method)'; ?>">
+                                            <?php echo $value["type"] ?> 
+                                            <?php echo $value["leave_method"] ?>
+                                        </td>
+                                        <td data-title="<?php echo $this->lang->line('leave'); ?> <?php echo $this->lang->line('date'); ?>">
+                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
+                                            -
+                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
+                                        </td>
+
+                                        <td data-title="<?php echo $this->lang->line('days'); ?>">
+                                            <?php echo $value["leave_days"]; ?>
+                                        </td>
+                                        <td data-title="<?php echo $this->lang->line('apply'); ?> <?php echo $this->lang->line('date'); ?>">
+                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
+                                        </td>
+                                        <td data-title="<?php echo $this->lang->line('status'); ?>">
+                                            <?php if ($value['status'] == '2') {
+                                                echo "Approved by Principal";
+                                            } else if ($value['status'] == '5') {
+                                                echo "Approved";
+                                            }else{
+                                                echo '&numsp;';
+                                            } 
+                                            ?>
+                                        </td>
+                                        <td>
+    <?php if (!empty($value["document_file"])): ?>
+        <a href="<?php echo base_url('uploads/staff_documents/' . $value["staff_id"] . '/' . $value["document_file"]); ?>" 
+           download 
+           class="btn btn-link" 
+           title="Download">
+           <?php echo $value["document_file"]; ?>
+        </a>
+    <?php else: ?>
+        No file available
+    <?php endif; ?>
+</td>
+                                        <td data-title="<?php echo $this->lang->line('action'); ?>">
+                                            <?php 
+                                                if ($value['status'] == '2') {
+                                            ?>
+                                                <form class="d-inline-block"
+                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                    method="post" accept-charset="utf-8">
+                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                        name="id">
+                                                    <input type="hidden" value="approve" name="status">
+                                                    <button class="btn-sm btn-success">Approve</button>
+                                                </form>
+                                                <form class="d-inline-block"
+                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                    method="post" accept-charset="utf-8">
+                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                        name="id">
+                                                    <input type="hidden" value="4" name="status">
+                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                </form>
+                                            <?php 
+                                                } else if ($value['status'] == '2') { 
+                                            ?>
+                                                <form class="d-inline-block"
+                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                    method="post" accept-charset="utf-8">
+                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                        name="id">
+                                                    <input type="hidden" value="3" name="status">
+                                                    <button class="btn-sm btn-success">Approve</button>
+                                                </form>
+                                                <form class="d-inline-block"
+                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                    method="post" accept-charset="utf-8">
+                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                        name="id">
+                                                    <input type="hidden" value="4" name="status">
+                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                </form>
+                                            <?php 
+                                                } else{
+                                                echo '&numsp;';
+                                            }
+                                            ?>
+                                        </td>
+
+                                    </tr>
+                                    <?php
+                                    $i++;
+                                }
+                                ?>
+
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+<?php }
+
+
+
+                 else { ?>
+
+
+
+
+
+
+                    <div class="box box-primary">
+                        <div class="box-header ptbnull">
+                            <h3 class="box-title titlefix">
+                                <?php echo $this->lang->line('approve_leave_request'); ?>
+                            </h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-pane active table-responsive no-padding">
+                                        <div class="download_label">
+                                            <?php echo $this->lang->line('approve_leave_request'); ?>
+                                        </div>
+                                        <table class="table table-striped table-bordered table-hover example">
+                                            <thead>
+
+                                                <th>
+                                                    <?php echo $this->lang->line('staff'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo 'Leave type(Method)'; ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('leave'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('days'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('apply'); ?>
+                                                    <?php echo $this->lang->line('date'); ?>
+                                                </th>
+                                                <th>
+                                                    <?php echo $this->lang->line('status'); ?>
+                                                </th>
+                                                <th class="text-right no-print">
+                                                    <?php echo $this->lang->line('action'); ?>
+                                                </th>
+
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 0;
+                                                // var_dump($leave_request);exit;
+                                                foreach ($leave_request as $key => $value) {
+                                                    ?>
+                                                    <tr>
+
+                                                        <td><span data-toggle="popover" class="detail_popover"
+                                                                data-original-title="" title="">
+                                                                <?php echo $value['name'] . " " . $value['surname']; ?>
+                                                            </span>
+                                                            <div class="fee_detail_popover" style="display: none">
+                                                                <?php echo $this->lang->line('staff_id'); ?>:
+                                                                <?php echo $value['employee_id']; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo $value["type"] ?> 
+                                                            <?php echo $value["leave_method"] ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_from"])) ?>
+                                                            -
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["leave_to"])) ?>
+                                                        </td>
+
+                                                        <td>
+                                                            <?php echo $value["leave_days"]; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if ($value['status'] == "2") { ?>
+                                                                <form
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="approve" name="status">
+                                                                    <button class="btn-sm btn-success">Approve</button>
+                                                                </form>
+                                                                <form
+                                                                    action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                    method="post" accept-charset="utf-8">
+                                                                    <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                        name="id">
+                                                                    <input type="hidden" value="4" name="status">
+                                                                    <button class="btn-sm btn-danger">Reject</button>
+                                                                </form>
+
+                                                            <?php } else if ($value['status'] == "1") {
+                                                                echo "Approved by Coordinator";
+                                                            } else if ($value['status'] == "0") { ?>
+                                                                        <form
+                                                                            action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                            method="post" accept-charset="utf-8">
+                                                                            <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                                name="id">
+                                                                            <input type="hidden" value="approve" name="status">
+                                                                            <button class="btn-sm btn-success">Approve</button>
+                                                                        </form>
+                                                                        <form
+                                                                            action="<?php echo site_url('admin/staff/updateTeacherLeave'); ?>"
+                                                                            method="post" accept-charset="utf-8">
+                                                                            <input type="hidden" value="<?php echo $value['id'] ?>"
+                                                                                name="id">
+                                                                            <input type="hidden" value="4" name="status">
+                                                                            <button class="btn-sm btn-danger">Reject</button>
+                                                                        </form>
+
+                                                                <?php
+                                                            } else if ($value['status'] == "approve") {
+                                                                echo "Approved";
+                                                            } ?>
+                                                        </td>
+
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                }
+                                                ?>
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
 
@@ -224,7 +820,6 @@
                                         </span>
                                     </td>
                                 </tr>
-
                                 <tr>
                                     <th>Department</th>
                                     <td><span id='department'></span>
@@ -232,8 +827,6 @@
                                     <th>Designation</th>
                                     <td><span id="designation"></span></td>
                                 </tr>
-
-
 
                                 <tr>
                                     <th>
@@ -250,6 +843,33 @@
                                         <?php echo $this->lang->line('date'); ?>
                                     </th>
                                     <td><span id="applied_date"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Director Staus: </th>
+                                    <td><span id='drstatus'></span>
+                                    </td>
+                                    <th>Director note</th>
+                                    <td><span id="drnote"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Principal Staus: </th>
+                                    <td><span id='prstatus'></span>
+                                    </td>
+                                    <th>Principal Note</th>
+                                    <td><span id="prnote"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>HOD Staus: </th>
+                                    <td><span id='hodstatus'></span>
+                                    </td>
+                                    <th>HOD Note</th>
+                                    <td><span id="hodnote"></span></td>
+                                </tr>
+                                <tr>
+                                    <th>Leave Method </th>
+                                    <td><span id="method"></span>
+                                    </td>
+
                                 </tr>
                                 <tr>
 
@@ -298,13 +918,26 @@
                                 </tr>
                                 <tr>
                                     <?php
-                                    if ($this->rbac->hasPrivilege('approve_leave_by_class_coordinator', 'can_edit')) {
+                                    if ($this->rbac->hasPrivilege('approve_leave_request', 'can_edit')) {
                                         ?>
                                         <td colspan="4">
                                             <button type="button" class="btn btn-primary submit_schsetting pull-right"
+                                                data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Save</button>
+                                        </td>
+                                    <?php }
+                                    if ($this->rbac->hasPrivilege('approve_leave_requestpr', 'can_edit')) {
+                                        ?>
+                                        <td colspan="4">
+                                            <button type="button" class="btn btn-primary submit_schsettingpr pull-right"
                                                 data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">
-                                                <?php echo $this->lang->line('save'); ?>
-                                            </button>
+                                                Save</button>
+                                        </td>
+                                    <?php }
+                                    if ($this->rbac->hasPrivilege('approve_leave_requestdr', 'can_edit')) {
+                                        ?>
+                                        <td colspan="4">
+                                            <button type="button" class="btn btn-primary submit_schsettingdr pull-right"
+                                                data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Save</button>
                                         </td>
                                     <?php } ?>
                                 </tr>
@@ -356,7 +989,8 @@
                             <label>
                                 <?php echo $this->lang->line('name'); ?>
                             </label><small class="req"> *</small>
-                            <select name="empname" id="empname" value="" class="form-control">
+                            <select name="empname" id="empname" value="" onchange="   getLeaveTypeDDL(this.value)"
+                                class="form-control">
                                 <option value="" selected>
                                     <?php echo $this->lang->line('select') ?>
                                 </option>
@@ -442,6 +1076,18 @@
                             </label>
                             <input type="file" id="file" name="userfile" class="filestyle form-control">
                             <input type="hidden" id="filename" name="filename">
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6" id="reason">
+                            <label>
+                                <?php echo $this->lang->line('status'); ?>
+                            </label>
+
+                            <textarea class="form-control" style="resize: none;" rows="4" id="status" name="status"
+                                placeholder=""></textarea>
+                            <span class="text-danger">
+                                <?php echo form_error('status'); ?>
+                            </span>
+
                         </div>
 
                         <div class="form-group  col-xs-12 col-sm-12 col-md-12 col-lg-6">
@@ -529,7 +1175,7 @@
         $('#reservation').daterangepicker();
     });
 
-    function addSleave() {
+    function addLeave() {
         $('input:radio[name=addstatus]').attr('checked', false);
         $('input[type=text]').val('');
         $('textarea[name="reason"]').text('');
@@ -560,12 +1206,13 @@
         $('input:radio[name=status]').attr('checked', false);
         var base_url = '<?php echo base_url() ?>';
         $.ajax({
-            url: base_url + 'admin/leaverequest/leaveRecordsuper',
+            url: base_url + 'admin/leaverequest/leaveRecord',
             type: 'POST',
             data: { id: id },
             dataType: "json",
             success: function (result) {
                 console.log(result);
+
                 $('input[name="leave_request_id"]').val(result.id);
                 $('#employee_id').html(result.employee_id);
                 $('#name').html(result.name);
@@ -574,11 +1221,19 @@
                 $('#leave_type').html(result.type);
                 $('#days').html(result.leave_days + ' Days');
                 $('#remark').html(result.employee_remark);
-                $('#department').html(result.department_name);
-                $('#designation').html(result.designation);
                 $('#applied_date').html(new Date(result.date).toString("MM/dd/yyyy"));
                 $('#appliedby').html(result.applied_by);
+                $('#department').html(result.department_name);
+                $('#designation').html(result.designation);
                 $("#detailremark").text(result.admin_remark);
+                $('#prstatus').html(result.pstatus);
+                $('#prnote').html(result.principal_remark);
+                $('#drstatus').html(result.dstatus);
+                $("#drnote").text(result.director_remark);
+                $("#status").text(result.status);
+                $('#hodstatus').html(result.hod);
+                $('#method').html(result.leave_method);
+                $("#hodnote").text(result.hod_remark);
                 if (result.status == 'approve') {
 
                     $('input:radio[name=status]')[1].checked = true;
@@ -609,7 +1264,7 @@
         var $this = $(this);
         $this.button('loading');
         $.ajax({
-            url: '<?php echo site_url("admin/leaverequest/leaveStatussuperviser") ?>',
+            url: '<?php echo site_url("admin/leaverequest/leaveStatus") ?>',
             type: 'post',
             data: $('#leavedetails_form').serialize(),
             dataType: 'json',
@@ -633,7 +1288,62 @@
             }
         });
     });
+    $(document).on('click', '.submit_schsettingpr', function (e) {
+        var $this = $(this);
+        $this.button('loading');
+        $.ajax({
+            url: '<?php echo site_url("admin/leaverequest/leaveStatuspr") ?>',
+            type: 'post',
+            data: $('#leavedetails_form').serialize(),
+            dataType: 'json',
+            success: function (data) {
 
+                if (data.status == "fail") {
+
+                    var message = "";
+                    $.each(data.error, function (index, value) {
+
+                        message += value;
+                    });
+                    errorMsg(message);
+                } else {
+
+                    successMsg(data.message);
+                    window.location.reload(true);
+                }
+
+                $this.button('reset');
+            }
+        });
+    });
+    $(document).on('click', '.submit_schsettingdr', function (e) {
+        var $this = $(this);
+        $this.button('loading');
+        $.ajax({
+            url: '<?php echo site_url("admin/leaverequest/leaveStatusdr") ?>',
+            type: 'post',
+            data: $('#leavedetails_form').serialize(),
+            dataType: 'json',
+            success: function (data) {
+
+                if (data.status == "fail") {
+
+                    var message = "";
+                    $.each(data.error, function (index, value) {
+
+                        message += value;
+                    });
+                    errorMsg(message);
+                } else {
+
+                    successMsg(data.message);
+                    window.location.reload(true);
+                }
+
+                $this.button('reset');
+            }
+        });
+    });
     function checkStatus(status) {
 
 
@@ -656,7 +1366,7 @@
 
             e.preventDefault();
             $.ajax({
-                url: "<?php echo site_url("admin/leaverequest/addSleave") ?>",
+                url: "<?php echo site_url("admin/leaverequest/addLeave") ?>",
                 type: "POST",
                 data: new FormData(this),
                 dataType: 'json',
@@ -698,6 +1408,7 @@
             dataType: "json",
             success: function (data) {
                 $.each(data, function (i, obj) {
+
 
                     div_data += "<option value='" + obj.id + "' >" + obj.name + " " + obj.surname + " " + "(" + obj.employee_id + ")</option>";
                 });

@@ -73,6 +73,7 @@ class Leaverequest_model extends CI_model
 
 
         $this->db->where("id", $staff_id)->update("staff_leave_request", $data);
+        // echo $this->db->last_query();exit;
     }
     public function changeLeaveStatushod($data, $staff_id)
     {
@@ -149,11 +150,25 @@ class Leaverequest_model extends CI_model
 
     function getStafLeaveAdmin()
     {
-        $result = $this->db->select('staff_leave_request.*,staff.name,staff.surname,leave_types.type')->join('staff', 'staff.id=staff_leave_request.staff_id')->join('leave_types', 'leave_types.id=staff_leave_request.leave_type_id')->where('status', "4")->or_where('status', "approve")->order_by('id', "desc")->get('staff_leave_request')->result_array();
+        $result = $this->db->select('staff_leave_request.*,staff.name,staff.surname,leave_types.type')->join('staff', 'staff.id=staff_leave_request.staff_id')->join('leave_types', 'leave_types.id=staff_leave_request.leave_type_id')->where('status', "0")->or_where('status', "approve")->order_by('id', "desc")->get('staff_leave_request')->result_array();
 
         return $result;
     }
     
+    function getStafLeaveforprincipal()
+    {
+        $result = $this->db->select('staff_leave_request.*,staff.name,staff.surname,leave_types.type')->join('staff', 'staff.id=staff_leave_request.staff_id')->join('leave_types', 'leave_types.id=staff_leave_request.leave_type_id')->where('status', "1")->or_where('status', "approve")->or_where('status', "5")->order_by('id', "desc")->get('staff_leave_request')->result_array();
+        // echo $this->db->last_query();exit;
+        return $result;
+
+    }
+    function getStafLeavefordirector()
+    {
+        $result = $this->db->select('staff_leave_request.*,staff.name,staff.surname,leave_types.type')->join('staff', 'staff.id=staff_leave_request.staff_id')->join('leave_types', 'leave_types.id=staff_leave_request.leave_type_id')->where('status', "2")->or_where('status', "approve")->or_where('status', "5")->order_by('id', "desc")->get('staff_leave_request')->result_array();
+        // echo $this->db->last_query();exit;
+        return $result;
+
+    }
 
 }
 

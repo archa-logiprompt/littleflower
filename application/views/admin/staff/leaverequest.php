@@ -31,6 +31,7 @@
                                             <th><?php echo $this->lang->line('leave'); ?> <?php echo $this->lang->line('date'); ?></th>
                                             <th><?php echo $this->lang->line('days'); ?></th>
                                             <th><?php echo $this->lang->line('apply'); ?> <?php echo $this->lang->line('date'); ?></th>
+                                            <th><?php echo "File" ?></th>
                                             <th><?php echo $this->lang->line('status'); ?></th>
                                             <th class="text-right no-print"><?php echo $this->lang->line('action'); ?></th>
 
@@ -51,27 +52,59 @@
 
                                                     <td><?php echo $value["leave_days"]; ?></td>
                                                     <td><?php echo date($this->customlib->getSchoolDateFormat(), strtotime($value["date"])); ?></td>
-                                                    <?php
-                                                    if ($value["status"] == "approve") {
-                                                        $label = "class='label label-success'";
-                                                    } else if ($value["status"] == "pending") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "1") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "2") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "3") {
-                                                        $label = "class='label label-warning'";
-                                                    } else if ($value["status"] == "disapprove") {
-                                                        $label = "class='label label-danger'";
-                                                    }
-                                                    ?>
-                                                    <td><span data-toggle="popover" class="detail_popover" data-original-title="" title=""><small <?php echo $label ?>><?php echo $status[$value["status"]]; ?></small></span>
+                                                    <td>
+    <?php if (!empty($value["document_file"])): ?>
+        <a href="<?php echo base_url('uploads/staff_documents/' . $value["staff_id"] . '/' . $value["document_file"]); ?>" 
+           download 
+           class="btn btn-link" 
+           title="Download">
+           <?php echo $value["document_file"]; ?>
+        </a>
+    <?php else: ?>
+        No file available
+    <?php endif; ?>
+</td>
 
-                                                        <div class="fee_detail_popover" style="display: none"><?php echo "Submitted By: " . $value['applied_by']; ?></div>
-                                                    </td>
+                                                    <?php
+// Determine the appropriate label and display text based on the status
+                                                                    switch ($value["status"]) {
+                                                                        case '4':
+                                                                            $label = "class='label label-success'";
+                                                                            $displayText = "Approved";
+                                                                            break;
+                                                                        case '0':
+                                                                            $label = "class='label label-warning'";
+                                                                            $displayText = "Pending";
+                                                                            break;
+                                                                        case '1':
+                                                                            $label = "class='label label-info'";
+                                                                            $displayText = "Approved by HOD";
+                                                                            break;
+                                                                        case '2':
+                                                                            $label = "class='label label-primary'";
+                                                                            $displayText = "Approved by Principal";
+                                                                            break;
+                                                                        case '3':
+                                                                                $label = "class='label label-success'";
+                                                                                $displayText = "Approved ";
+                                                                                break;
+                                                                        default:
+                                                                            $label = "class='label label-default'";
+                                                                            $displayText = isset($status[$value["status"]]) ? $status[$value["status"]] : "Unknown Status";
+                                                                            break;
+                                                                    }
+                                                                    ?>
+                                                                    <td>
+                                                                        <span data-toggle="popover" class="detail_popover" data-original-title="" title="">
+                                                                            <small <?php echo $label; ?>><?php echo $displayText; ?></small>
+                                                                        </span>
+                                                                        <div class="fee_detail_popover" style="display: none">
+                                                                            <?php echo "Submitted By: " . $value['applied_by']; ?>
+                                                                        </div>
+                                                                    </td>
+
                                                     <td class="pull-right no-print">
-                                                        <?php if ($value["status"] == "pending" || $value["status"] == "1" || $value["status"] == "2" || $value["status"] == "3") { ?>
+                                                        <?php if ($value["status"] == "0" || $value["status"] == "1" || $value["status"] == "2" || $value["status"] == "3") { ?>
                                                             <a href="<?php echo base_url("admin/staff/deleteLeave/" . $value["id"]) ?>" class="btn btn-default btn-xs"><i class='fa fa-trash'></i></a>
                                                         <?php } ?>
                                                         <a href="#leavedetails" onclick="getRecord('<?php echo $value["id"] ?>')" role="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?php echo $this->lang->line('view'); ?>" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing"><i class="fa fa-reorder"></i></a>
@@ -142,8 +175,7 @@
 
                                     <th><?php echo $this->lang->line('reason'); ?></th>
                                     <td><span id="remark"> </span></td>
-                                    <th><?php echo $this->lang->line('download'); ?></th>
-                                    <td><span id="download_file"></span></td>
+                                 
                                 </tr>
                                 <tr>
                                     <th>Director Staus: </th>
@@ -211,6 +243,7 @@
                                 <select name="leave_type" id="leave_type" class="form-control">
                                     <option value="">Select</option>
                                     <?php
+                                   
                                     foreach ($leavetype as $leave_key => $leave_value) {
                                         if (!empty($leave_value["alloted_leave"])) {
                                     ?>

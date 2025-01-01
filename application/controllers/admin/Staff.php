@@ -1194,6 +1194,7 @@ class Staff extends Admin_Controller
 
         // $LeaveTypes = $this->staff_model->getLeaveType();
         $LeaveTypes = $this->leaverequest_model->allotedLeaveType($userdata["id"]);
+
         $data["staff_id"] = $userdata["id"];
         $data["leavetype"] = $LeaveTypes;
 
@@ -1310,5 +1311,37 @@ class Staff extends Admin_Controller
         }
 
         echo json_encode($array);
+    }
+
+    function updateTeacherLeave()
+    {
+        $data = array(
+            'id' => $this->input->post('id'),
+            'status' => $this->input->post('status'),
+        );
+    
+
+        $this->db->where('id', $data['id']);
+        $this->db->update('staff_leave_request', $data);
+        $userdata = $this->customlib->getUserData();
+        $type = $userdata['user_type'];
+        if ($type == 'PRINCIPAL') {
+            redirect("admin/leaverequest/leaverequest");
+
+        }
+         else if ($type == 'HOD') {
+            redirect("admin/staff/leaverequest");
+
+        }
+        else if ($type == 'Director') {
+            redirect("admin/staff/leaverequest");
+
+        }
+        
+        else {
+            redirect("admin/leaverequest/leaverequest");
+
+        }
+
     }
 }

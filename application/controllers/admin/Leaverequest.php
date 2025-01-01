@@ -31,13 +31,31 @@ class Leaverequest extends Admin_Controller
 
         $this->session->set_userdata('top_menu', 'HR');
         $this->session->set_userdata('sub_menu', 'admin/leaverequest/leaverequest');
-        $leave_request = $this->leaverequest_model->getStafLeaveAdmin();
-
-        $data["leave_request"] = $leave_request;
-
+        
         $LeaveTypes = $this->staff_model->getLeaveType();
+        // var_dump(  $LeaveTypes);exit;
         $userdata = $this->customlib->getUserData();
+        $data['usertype'] = $userdata['user_type'];
 
+        if($data['usertype']=='HOD')
+        {
+         
+            $leave_request = $this->leaverequest_model->getStafLeaveAdmin();
+            
+        }
+        elseif($data['usertype']=='PRINCIPAL')
+        {
+           
+            $leave_request = $this->leaverequest_model->getStafLeaveforprincipal();
+
+        }
+        elseif($data['usertype']=='Director')
+        {
+           
+            $leave_request = $this->leaverequest_model->getStafLeavefordirector();
+
+        }
+        $data["leave_request"] = $leave_request;
         $data["leavetype"] = $LeaveTypes;
         $staffRole = $this->staff_model->getStaffRole();
         $data["staffrole"] = $staffRole;
@@ -729,7 +747,7 @@ class Leaverequest extends Admin_Controller
         $this->load->view("layout/footer", $data);
     }
 
-    public function updateleaverequest($path, $id, $status)
+    public function updateleaverequest($path,$id, $status)
     {
         $data = array(
             'id' => $id,
@@ -748,25 +766,22 @@ class Leaverequest extends Admin_Controller
         $staff_id = $userdata["id"];
 
         $userType = explode(',', $this->db->select('role_id')->where('staff_id', $staff_id)->get('staff_roles')->row()->role_id);
+// var_dump($userType);exit;
 
 
-
-        if (in_array("2", $userType)) {
-            if ($this->rbac->hasPrivilege('approve_leave_requestpr', 'can_view')) {
-                $status = 'approve';
-
+        if (in_array("2", $userType) && in_array("14", $userType)) {
+            $status = '2';
+        } else if (in_array("2", $userType)) {
+            if ($this->rbac->hasPrivilege('approve_leave_by_class_coordinator', 'can_view')) {
+                $status = '1';
             } else if ($this->rbac->hasPrivilege('approve_leave_request_ug/pg', 'can_view')) {
                 $status = '3';
-
             } else if ($this->rbac->hasPrivilege('approve_leave_request_hod', 'can_view')) {
-                $status = '2';
-
+                $status = '1';
             } else if ($this->rbac->hasPrivilege('approve_leave_by_class_coordinator', 'can_view')) {
                 $status = '1';
-
             } else {
-                $status = 'pending';
-
+                $status = '0';
             }
         } else {
             $status = "4";

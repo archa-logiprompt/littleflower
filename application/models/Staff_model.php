@@ -746,5 +746,6 @@ class Staff_model extends CI_Model
     public function getLeaveStatus($data)
     {
         $this->db->where('id', $data['id'])->update('staff_leave_request', $data);
+        // echo $this->db->last_query();exit;
     }
 }
