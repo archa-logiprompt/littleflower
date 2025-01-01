@@ -307,7 +307,6 @@ class Weeklycalendarnew extends Admin_Controller
             $period_id = $this->input->post('period_id');
 
             $this->db->where('id', $period_id)->update('period_timing', $insert_array);
-      
         } else {
 
             $this->db->insert('period_timing', $insert_array);
@@ -1399,7 +1398,7 @@ class Weeklycalendarnew extends Admin_Controller
         $data['isupdate'] = false;
         $data['issearch'] = false;
         $teacherlist = $this->staff_model->getStaffbyrole($role = 2);
-        $data['teacherlist']=$teacherlist;
+        $data['teacherlist'] = $teacherlist;
         $data['period_list'] = $this->db->where([
             'class_id' => $data['class_id'],
             'section_id' => $data['section_id'],
@@ -1448,12 +1447,13 @@ class Weeklycalendarnew extends Admin_Controller
             $this->load->view('layout/footer', $data);
         }
     }
-    public function getTopicsBySubject() {
+    public function getTopicsBySubject()
+    {
         $subject_id = $this->input->post('subject_id');
         $topics = $this->subject_model->getTopicsBySubjectforweekly($subject_id); // Replace with your model method
         echo json_encode($topics);
     }
-    
+
     public function savecalendar()
     {
         $subjects = $this->input->post('subject_id');
@@ -1464,7 +1464,7 @@ class Weeklycalendarnew extends Admin_Controller
                 break;
             }
         }
-    
+
         $teachers = $this->input->post('teacher_id');
         $date = $this->input->post('event_dates');
         $class = $this->input->post('hidden_class');
@@ -1472,7 +1472,7 @@ class Weeklycalendarnew extends Admin_Controller
         $activity = $this->input->post('activity_id');
         $activity_teacher_id = $this->input->post('activity_teacher_id');
         $topic = $this->input->post('topic_id');
-    
+
         $isactivity = 0;
         foreach ($activity as $activities) {
             if ($activities != "") {
@@ -1480,20 +1480,20 @@ class Weeklycalendarnew extends Admin_Controller
                 break;
             }
         }
-        
+
         // Check if either activity or subject is provided
         if ($isactivity == 0 && $issubject == 0) {
             echo json_encode('fail');
         } else {
             $isHoliday = in_array('holiday', $activity);
-    
+
             // Get the active period ID based on class and section
             $active_period_id = $this->db->where([
                 'class_id' => $class,
                 'section_id' => $section,
                 'is_active' => 1
             ])->get('period_timing')->row()->id;
-    
+
             // Define an array to hold the values for insertion
             $insert_array = [
                 'class_id' => $class,
@@ -1552,12 +1552,31 @@ class Weeklycalendarnew extends Admin_Controller
             ];
             // Insert data into the 'weekly_calendar' table
             $this->db->insert('weekly_calendar', $insert_array);
+            $insert_id = $this->db->insert_id();
+            $period_array = array('eight_to_nine', 'nine_to_ten', 'ten_to_eleven', 'eleven_to_twelve', 'two_to_three', 'three_to_four', 'four_to_five');
+
+            foreach ($period_array as $period) {
+                $work_log = array(
+                    'teacher_id' => $insert_array[$period . '_teacher'] ? $insert_array[$period . '_teacher'] : $insert_array[$period . '_activity_teacher'],
+                    'assigned_teacher' => $insert_array[$period . '_teacher'],
+                    'activity' => $insert_array[$period . '_activity'],
+                    'subject_id' => $insert_array[$period . '_subject'],
+                    'topic' => $insert_array[$period . '_topic'],
+                    'calendar_id' => $insert_id,
+                    'period' => $period,
+                    'is_class' => 1,
+                );
+                $this->db->insert('period_report', $work_log);
+            }
+
+
+
             // echo $this->db->last_query();exit;
-    
+
             echo json_encode('success');
         }
     }
-    
+
 
 
     public function edit($id)
@@ -1628,49 +1647,49 @@ class Weeklycalendarnew extends Admin_Controller
             if ($value['eight_to_nine_teacher'] != 0) {
                 $name .= "$period_list->period_one_from - $period_list->period_one_to : " . $this->getStaffName($value['eight_to_nine_teacher']) . "" . $this->getSubjectName($value['eight_to_nine_subject']) . "\n";
             } else if ($value['eight_to_nine_activity'] != '') {
-                $name .= "$period_list->period_one_from - $period_list->period_one_to : $value[eight_to_nine_activity]\n";
+                $name .= "$period_list->period_one_from - $period_list->period_one_to :" . $this->getStaffName($value['eight_to_nine_activity_teacher']) . "( $value[eight_to_nine_activity])\n";
             }
 
             if ($value['nine_to_ten_teacher'] != 0) {
                 $name .= "$period_list->period_two_from - $period_list->period_two_to : " . $this->getStaffName($value['nine_to_ten_teacher']) . "" . $this->getSubjectName($value['nine_to_ten_subject']) . "\n";
             } else if ($value['nine_to_ten_activity'] != '') {
-                $name .= "$period_list->period_two_from - $period_list->period_two_to : $value[nine_to_ten_activity]\n";
+                $name .= "$period_list->period_two_from - $period_list->period_two_to : " . $this->getStaffName($value['nine_to_ten_activity_teacher']) . "($value[nine_to_ten_activity])\n";
             }
 
             if ($value['ten_to_eleven_teacher'] != 0) {
                 $name .= "$period_list->period_three_from - $period_list->period_three_to : " . $this->getStaffName($value['ten_to_eleven_teacher']) . "" . $this->getSubjectName($value['ten_to_eleven_subject']) . "\n";
             } else if ($value['ten_to_eleven_activity'] != '') {
-                $name .= "$period_list->period_three_from - $period_list->period_three_to : $value[ten_to_eleven_activity]\n";
+                $name .= "$period_list->period_three_from - $period_list->period_three_to : " . $this->getStaffName($value['ten_to_eleven_activity_teacher']) . "($value[ten_to_eleven_activity])\n";
             }
 
             if ($value['eleven_to_twelve_teacher'] != 0) {
                 $name .= "$period_list->period_four_from - $period_list->period_four_to : " . $this->getStaffName($value['eleven_to_twelve_teacher']) . "" . $this->getSubjectName($value['eleven_to_twelve_subject']) . "\n";
             } else if ($value['eleven_to_twelve_activity'] != '') {
-                $name .= "$period_list->period_four_from - $period_list->period_four_to : $value[eleven_to_twelve_activity]\n";
+                $name .= "$period_list->period_four_from - $period_list->period_four_to : " . $this->getStaffName($value['eleven_to_twelve_activity_teacher']) . "($value[eleven_to_twelve_activity])\n";
             }
 
             if ($value['twelve_to_one_teacher'] != 0) {
                 $name .= "$period_list->period_five_from - $period_list->period_five_to : " . $this->getStaffName($value['twelve_to_one_teacher']) . "" . $this->getSubjectName($value['twelve_to_one_subject']) . "\n";
             } else if ($value['twelve_to_one_activity'] != '') {
-                $name .= "$period_list->period_five_from - $period_list->period_five_to : $value[twelve_to_one_activity]\n";
+                $name .= "$period_list->period_five_from - $period_list->period_five_to :" . $this->getStaffName($value['twelve_to_one_activity_teacher']) . " ($value[twelve_to_one_activity])\n";
             }
 
             if ($value['two_to_three_teacher'] != 0) {
                 $name .= "$period_list->period_six_from - $period_list->period_six_to : " . $this->getStaffName($value['two_to_three_teacher']) . "" . $this->getSubjectName($value['two_to_three_subject']) . "\n";
             } else if ($value['two_to_three_activity'] != '') {
-                $name .= "$period_list->period_six_from - $period_list->period_six_to : $value[two_to_three_activity]\n";
+                $name .= "$period_list->period_six_from - $period_list->period_six_to :" . $this->getStaffName($value['two_to_three_activity_teacher']) . " ($value[two_to_three_activity])\n";
             }
 
             if ($value['three_to_four_teacher'] != 0) {
                 $name .= "$period_list->period_seven_from - $period_list->period_seven_to : " . $this->getStaffName($value['three_to_four_teacher']) . "" . $this->getSubjectName($value['three_to_four_subject']) . "\n";
             } else if ($value['three_to_four_activity'] != '') {
-                $name .= "$period_list->period_seven_from - $period_list->period_seven_to : $value[three_to_four_activity]\n";
+                $name .= "$period_list->period_seven_from - $period_list->period_seven_to :" . $this->getStaffName($value['three_to_four_activity_teacher']) . " ($value[three_to_four_activity])\n";
             }
 
             if ($value['four_to_five_teacher'] != 0) {
                 $name .= "$period_list->period_eight_from - $period_list->period_eight_to : " . $this->getStaffName($value['four_to_five_teacher']) . "" . $this->getSubjectName($value['four_to_five_subject']) . "\n";
             } else if ($value['four_to_five_activity'] != '') {
-                $name .= "$period_list->period_eight_from - $period_list->period_eight_to : $value[four_to_five_activity]\n";
+                $name .= "$period_list->period_eight_from - $period_list->period_eight_to : " . $this->getStaffName($value['four_to_five_activity_teacher']) . " ($value[four_to_five_activity])\n";
             }
 
             // echo $this->getDayFormatYDM($value['date']);
@@ -1732,20 +1751,20 @@ class Weeklycalendarnew extends Admin_Controller
             'two_to_three_activity' => $activity[5],
             'three_to_four_activity' => $activity[6],
             'four_to_five_activity' => $activity[7],
-            'eight_to_nine_topic' =>  $topic[0], 
+            'eight_to_nine_topic' =>  $topic[0],
             'nine_to_ten_topic' => $topic[1],
-           'ten_to_eleven_topic' => $topic[2], 
-           'eleven_to_twelve_topic' =>$topic[3],  
-            'twelve_to_one_topic' => $topic[4], 
-           'two_to_three_topic' =>$topic[5],
-           'three_to_four_topic' =>$topic[6],
-            'four_to_five_topic' => $topic[7], 
-           
+            'ten_to_eleven_topic' => $topic[2],
+            'eleven_to_twelve_topic' => $topic[3],
+            'twelve_to_one_topic' => $topic[4],
+            'two_to_three_topic' => $topic[5],
+            'three_to_four_topic' => $topic[6],
+            'four_to_five_topic' => $topic[7],
 
-            'eight_to_nine_activity_teacher' =>$activity_teacher_id[0],
+
+            'eight_to_nine_activity_teacher' => $activity_teacher_id[0],
             'nine_to_ten_activity_teacher' => $activity_teacher_id[1],
-            'ten_to_eleven_activity_teacher' =>$activity_teacher_id[2],
-            'eleven_to_twelve_activity_teacher' =>$activity_teacher_id[3],
+            'ten_to_eleven_activity_teacher' => $activity_teacher_id[2],
+            'eleven_to_twelve_activity_teacher' => $activity_teacher_id[3],
             'twelve_to_one_activity_teacher' => $activity_teacher_id[4],
             'two_to_three_activity_teacher' => $activity_teacher_id[5],
             'three_to_four_activity_teacher' => $activity_teacher_id[6],
@@ -1778,7 +1797,7 @@ class Weeklycalendarnew extends Admin_Controller
         }
 
         $timetablearr = array_merge($timetable, $periods);
-// var_dump($timetablearr);exit;
+        // var_dump($timetablearr);exit;
         echo json_encode($timetablearr);
     }
 

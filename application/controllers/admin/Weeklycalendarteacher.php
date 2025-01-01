@@ -139,7 +139,7 @@ class Weeklycalendarteacher extends Admin_Controller
                         $this->db->from('student_session')
                         ->join('students', 'student_session.student_id = students.id')
                         ->where(['class_id' => $data['class_id'], 'section_id' => $data['section_id']])
-                        ->order_by('students.firstname', 'ASC') 
+                        ->order_by('students.firstname', 'ASC')
                         ->get()
                         ->result_array();
 
@@ -588,7 +588,7 @@ class Weeklycalendarteacher extends Admin_Controller
             'is_class' => 1
 
         ];
-// var_dump($insert_array);exit;
+        // var_dump($insert_array);exit;
 
         if ($this->input->post('teacher_id') == $userdata) {
 
@@ -624,7 +624,7 @@ class Weeklycalendarteacher extends Admin_Controller
                 'teacher_id' => $userdata,
                 'subject_id' => $this->input->post('subject_id'),
                 'calendar_id' => $this->input->post('calendarid'),
-                'topic' => $this->input->post('topic'),
+                'topic' => $this->input->post('topic_id'),
                 'works' => $img_name,
                 'assigned_teacher' => $this->input->post('teacher_id'),
                 'period' => $this->input->post('period'),
@@ -635,7 +635,7 @@ class Weeklycalendarteacher extends Admin_Controller
                 'teacher_id' => $userdata,
                 'subject_id' => $this->input->post('subject_id'),
                 'calendar_id' => $this->input->post('calendarid'),
-                'topic' => $this->input->post('topic'),
+                'topic' => $this->input->post('topic_id'),
                 'assigned_teacher' => $this->input->post('teacher_id'),
                 'period' => $this->input->post('period'),
                 'other_teacher' => $this->input->post('teacher_id') == $userdata ? 0 : 1,
@@ -646,6 +646,7 @@ class Weeklycalendarteacher extends Admin_Controller
 
         $week_calendar_update = [
             '' . $this->input->post('period') . '_teacher' => $this->input->post('teacher_id'),
+            '' . $this->input->post('period') . '_topic' => $this->input->post('topic_id')
         ];
 
         $this->db->where('id', $this->input->post('calendarid'))->update('weekly_calendar', $week_calendar_update);
@@ -674,9 +675,10 @@ class Weeklycalendarteacher extends Admin_Controller
             'calendar_id' => $calendar,
         ];
 
-        // var_dump($wherearray);
 
-        $period = $this->db->where($wherearray)->get('period_report')->row();
+        $period = $this->db->select('*,period_report.id as period_id')->join('weekly_calendar', 'weekly_calendar.id=period_report.calendar_id')->where($wherearray)->get('period_report')->row();
+        
+
         echo json_encode($period);
     }
 
@@ -754,5 +756,11 @@ class Weeklycalendarteacher extends Admin_Controller
         $date_format = 'd/m/Y';
         $dateformat = DateTime::createFromFormat($date_format, $date_string);
         return $dateformat->format('Y-m-d');
+    }
+
+    public function getalltopics()
+    {
+        $result = $this->db->select('*,subject_topics.id as topic_id')->join('subjects', 'subjects.id=teacher_subjects.subject_id')->join('subject_topics', 'subject_topics.subject_id=subjects.id')->where('teacher_subjects.id', $this->input->post('subject'))->get('teacher_subjects')->result_array();
+        echo json_encode($result);
     }
 }

@@ -784,9 +784,16 @@ class Teacher extends Admin_Controller
 
     function deleteTimetable()
     {
-        $id=$this->input->post('id');
+        $id = $this->input->post('id');
         $this->db->where('id', $id)->delete('weekly_calendar');
 
         echo json_encode(array('message' => "Timetable deleted"));
+    }
+    function approveTimetable()
+    {
+        $id = $this->input->post('id');
+        $this->db->set('status', "1")->where('id', $id)->update('weekly_calendar');
+
+        echo json_encode(array('message' => "Timetable Approved"));
     }
 }
